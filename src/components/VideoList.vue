@@ -67,7 +67,24 @@ export default {
       }
 
       return `https://www.googleapis.com/youtube/v3/search?part=id,snippet&q=${term}&key=${key}&maxResults=${maxResults}&type=video`
-    }
+    },
+
+    infiniteScroll() {
+      window.onscroll = () => {
+        let windowBottom = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
+
+        if (windowBottom) {
+          axios.get(this.apiUrl(this.term, this.apiKey, this.maxPerPage, this.nextPage))
+            .then(res => {
+              this.nextPage = res.data.nextPageToken;
+
+              res.data.items.map((item) => {
+                this.results.push(item);
+              });
+            });
+        }
+      };
+    },
   },
 
   created() {
@@ -81,6 +98,10 @@ export default {
           this.results = res.data.items;
         });
     })
+  },
+
+  mounted() {
+    this.infiniteScroll();
   }
 }
 </script>
