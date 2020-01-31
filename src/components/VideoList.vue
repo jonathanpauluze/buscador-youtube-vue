@@ -1,8 +1,8 @@
 <template>
-  <v-layout justify-center align-center>
+  <v-layout justify-center align-center v-if="show">
     <v-flex xs12 sm10 md8>
       <v-container>
-        <v-row v-if="show">
+        <v-row>
           <v-col
             v-for="(result, idx) in results"
             :key="idx"
