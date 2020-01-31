@@ -1,30 +1,56 @@
 <template>
   <v-layout justify-center align-center>
-    <input v-model="searchTerm" type="text"/>
-    <button @click="search">Pesquisar</button>
+    <v-flex xs12 sm10 md8>
+      <v-container>
+        <v-row>
+          <v-col cols="12">
+            <v-form ref="form" lazy-validation>
+              <v-text-field
+                v-model="search.term"
+                :rules="search.rules"
+                @keypress.13.prevent="makeSearch"
+                type="text"
+                placeholder="Pesquisar"
+                color="#3e206d"
+              />
+              <v-btn
+                color="#3e206d"
+                class="mt-3"
+                dark
+                block
+                depressed
+                large
+                @click.prevent="makeSearch"
+              >
+                Buscar
+              </v-btn>
+            </v-form>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-flex>
   </v-layout>
 </template>
 
 <script>
-import axios from 'axios';
+// import axios from 'axios';
 import { EventBus } from '@/event-bus.js';
+
 export default {
   name: 'SearchForm',
   data() {
     return {
-      apiKey: 'AIzaSyBfNv0UixraspY_Cc66VSPsm-_c-mn7H28',
-      searchTerm: '',
-      searchResults: '',
+      search: {
+        term: '',
+        rules: [v => !!v || 'Digite algo para pesquisar']
+      }
     }
   },
   methods: {
-    search() {
-      axios
-        .get(`https://www.googleapis.com/youtube/v3/search?part=id,snippet&q=${this.searchTerm}&key=${this.apiKey}`)
-        .then(res => (this.searchResults = res))
-        .then(() => {
-          EventBus.$emit('received-results', this.searchResults);
-        });
+    makeSearch() {
+      if(this.$refs.form.validate()) {
+        EventBus.$emit('receive-term', this.search.term);
+      }
     }
   }
 }
