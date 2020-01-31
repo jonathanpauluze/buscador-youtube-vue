@@ -1,8 +1,8 @@
 <template>
-  <v-layout justify-center align-center>
+  <v-layout justify-center align-center v-if="show">
     <v-flex xs12 sm10 md8>
       <v-container>
-        <v-row v-if="show">
+        <v-row>
           <v-col
             v-for="(result, idx) in results"
             :key="idx"
@@ -29,6 +29,7 @@
                 <v-btn
                   color="#3e206d"
                   text
+                  @click="details(result.id.videoId)"
                 >
                   Detalhes
                 </v-btn>
@@ -51,8 +52,10 @@ export default {
 
   data() {
     return {
-      show: false,
+      searchBaseUrl: 'https://www.googleapis.com/youtube/v3/search?part=id,snippet&type=video&q=',
+      videoBaseUrl: 'https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=',
       apiKey: 'AIzaSyBfNv0UixraspY_Cc66VSPsm-_c-mn7H28',
+      show: false,
       term: '',
       maxPerPage: 6,
       nextPage: '',
@@ -61,12 +64,16 @@ export default {
   },
 
   methods: {
-    apiUrl(term, key, maxResults, nextPageToken) {
+    searchUrl(nextPageToken) {
       if(nextPageToken !== undefined) {
-        return `https://www.googleapis.com/youtube/v3/search?part=id,snippet&q=${term}&key=${key}&maxResults=${maxResults}&type=video&pageToken=${nextPageToken}`
+        return `${this.searchBaseUrl}${this.term}&key=${this.apiKey}&maxResults=${this.maxPerPage}&pageToken=${nextPageToken}`;
       }
 
-      return `https://www.googleapis.com/youtube/v3/search?part=id,snippet&q=${term}&key=${key}&maxResults=${maxResults}&type=video`
+      return `${this.searchBaseUrl}${this.term}&key=${this.apiKey}&maxResults=${this.maxPerPage}`;
+    },
+
+    videoUrl(id) {
+      return `${this.videoBaseUrl}${id}&key=${this.apiKey}`;
     },
 
     infiniteScroll() {
@@ -74,7 +81,7 @@ export default {
         let windowBottom = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
 
         if (windowBottom) {
-          axios.get(this.apiUrl(this.term, this.apiKey, this.maxPerPage, this.nextPage))
+          axios.get(this.searchUrl(this.nextPage))
             .then(res => {
               this.nextPage = res.data.nextPageToken;
 
@@ -85,13 +92,21 @@ export default {
         }
       };
     },
+
+    details(id) {
+      axios.get(this.videoUrl(id))
+        .then(res => {
+          EventBus.$emit('receive-details', res);
+        });
+    }
+    
   },
 
   created() {
     EventBus.$on('receive-term', term => {
       this.term = term;
       this.show = true;
-      axios.get(this.apiUrl(this.term, this.apiKey, this.maxPerPage))
+      axios.get(this.searchUrl())
         .then(res => {
           this.nextPage = res.data.nextPageToken;
           
