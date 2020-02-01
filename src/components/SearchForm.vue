@@ -2,9 +2,9 @@
   <v-layout justify-center align-center>
     <v-flex xs12 sm10 md8>
       <v-container class="relative-container">
-        <v-form ref="form" :class="(search.searched ? 'animate' : '')" lazy-validation>
+        <v-form ref="form" :class="(search.isSearched ? 'animate' : '')" lazy-validation>
           <v-row>
-            <v-col cols="12" sm="10">
+            <v-col cols="12" sm="9" class="no-mobile-y-padd">
               <v-text-field
                 v-model="search.term"
                 :rules="search.rules"
@@ -14,10 +14,9 @@
                 color="#3e206d"
               />
             </v-col>
-            <v-col cols="12" sm="2">
+            <v-col cols="12" sm="3" class="no-mobile-y-padd">
               <v-btn
                 color="#3e206d"
-                class="mt-3"
                 dark
                 block
                 depressed
@@ -45,14 +44,14 @@ export default {
       search: {
         term: '',
         rules: [v => !!v || 'Digite algo para pesquisar'],
-        searched: false
+        isSearched: false
       }
     }
   },
   methods: {
     makeSearch() {
       if(this.$refs.form.validate()) {
-        this.search.searched = true;
+        this.search.isSearched = true;
         EventBus.$emit('receive-term', this.search.term);
       }
     }
@@ -63,19 +62,39 @@ export default {
 <style lang="sass" scoped>
 @keyframes smooth-up
   from
-    top: 45%
+    top: 50%
+    margin-top: 0
+    transform: translate3d(0, -50%, 0)
   to
     top: 0
+    margin-top: 20px
+    transform: translate3d(0, 0, 0)
 
 form
     position: absolute
     padding: 0 16px
-    top: 45%
-    left: 20%
-    right: 20%
-    z-index: 10
+    top: 50%
+    left: 10%
+    right: 10%
+    transform: translate3d(0, -50%, 0)
+
+.no-mobile-y-padd
+  padding-top: 0
+  padding-bottom: 0
 
 .animate
   animation: smooth-up .3s forwards
   
+
+// ===== Queries =====
+@media only screen and (min-width: 600px)
+  .no-mobile-y-padd
+    padding-top: 12px
+    padding-bottom: 12px
+
+
+@media only screen and (min-width: 1000px)
+  form
+    left: 20%
+    right: 20%
 </style>
