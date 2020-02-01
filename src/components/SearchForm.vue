@@ -1,10 +1,10 @@
 <template>
   <v-layout justify-center align-center>
     <v-flex xs12 sm10 md8>
-      <v-container>
-        <v-row>
-          <v-col cols="12">
-            <v-form ref="form" lazy-validation>
+      <v-container class="relative-container">
+        <v-form ref="form" :class="(search.searched ? 'animate' : '')" lazy-validation>
+          <v-row>
+            <v-col cols="12" sm="10">
               <v-text-field
                 v-model="search.term"
                 :rules="search.rules"
@@ -13,6 +13,8 @@
                 placeholder="Pesquisar"
                 color="#3e206d"
               />
+            </v-col>
+            <v-col cols="12" sm="2">
               <v-btn
                 color="#3e206d"
                 class="mt-3"
@@ -24,9 +26,9 @@
               >
                 Buscar
               </v-btn>
-            </v-form>
-          </v-col>
-        </v-row>
+            </v-col>
+          </v-row>
+        </v-form>
       </v-container>
     </v-flex>
   </v-layout>
@@ -42,13 +44,15 @@ export default {
     return {
       search: {
         term: '',
-        rules: [v => !!v || 'Digite algo para pesquisar']
+        rules: [v => !!v || 'Digite algo para pesquisar'],
+        searched: false
       }
     }
   },
   methods: {
     makeSearch() {
       if(this.$refs.form.validate()) {
+        this.search.searched = true;
         EventBus.$emit('receive-term', this.search.term);
       }
     }
@@ -57,4 +61,21 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+@keyframes smooth-up
+  from
+    top: 45%
+  to
+    top: 0
+
+form
+    position: absolute
+    padding: 0 16px
+    top: 45%
+    left: 20%
+    right: 20%
+    z-index: 10
+
+.animate
+  animation: smooth-up .3s forwards
+  
 </style>
