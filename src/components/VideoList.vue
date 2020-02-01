@@ -1,7 +1,7 @@
 <template>
   <v-layout justify-center align-center v-if="show">
     <v-flex xs12 sm10 md8>
-      <v-container>
+      <v-container class="top-space">
         <v-row>
           <v-col
             v-for="(result, idx) in results"
@@ -122,4 +122,6 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+.top-space 
+  margin-top: 60px
 </style>
