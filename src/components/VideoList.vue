@@ -123,5 +123,10 @@ export default {
 
 <style lang="sass" scoped>
 .top-space 
-  margin-top: 60px
+  margin-top: 140px
+
+// ===== Queries =====
+@media only screen and (min-width: 600px)
+  .top-space 
+    margin-top: 80px
 </style>
