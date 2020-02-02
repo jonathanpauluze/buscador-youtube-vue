@@ -2,12 +2,12 @@
   Buscador do YouTube | Teste Frontend
 </h1>
 
-## Requisitos
+### Requisitos
 Para rodar esta projeto, é necessário ter instalado em sua máquina:
 - [NodeJS](https://nodejs.org/en/)
 - [Yarn](https://yarnpkg.com/) (Opcional)
 
-## Configurando projeto
+### Configurando projeto
 Abra o terminal na pasta do projeto e execute o comando:
 ```
 npm install
@@ -17,7 +17,7 @@ ou
 yarn install
 ```
 
-## Compilar e ativar hot-reloads para desenvolvimento
+### Compilar e ativar hot-reloads para desenvolvimento
 Com o terminal aberto na pasta do projeto, execute:
 ```
 npm run serve
