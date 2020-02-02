@@ -2,10 +2,16 @@
   <v-layout justify-center align-center>
     <v-flex xs12 sm10 md8>
       <v-container class="relative-container">
-        <v-form ref="form" :class="(search.isSearched ? 'animate' : '')" lazy-validation>
+        <v-form
+          @submit.prevent="makeSearch"
+          ref="form"
+          :class="(search.isSearched ? 'animate' : '')"
+          lazy-validation
+        >
           <v-row>
             <v-col cols="12" sm="9" class="no-mobile-y-padd">
               <v-text-field
+                class="search-form__input"
                 v-model="search.term"
                 :rules="search.rules"
                 @keypress.13.prevent="makeSearch"
@@ -16,12 +22,13 @@
             </v-col>
             <v-col cols="12" sm="3" class="no-mobile-y-padd">
               <v-btn
+                type="submit"
+                class="search-form__btn"
                 color="#3e206d"
                 dark
                 block
                 depressed
                 large
-                @click.prevent="makeSearch"
               >
                 Buscar
               </v-btn>
@@ -34,11 +41,9 @@
 </template>
 
 <script>
-// import axios from 'axios';
-import { EventBus } from '@/event-bus.js';
-
 export default {
   name: 'SearchForm',
+
   data() {
     return {
       search: {
@@ -48,11 +53,12 @@ export default {
       }
     }
   },
+  
   methods: {
     makeSearch() {
       if(this.$refs.form.validate()) {
         this.search.isSearched = true;
-        EventBus.$emit('receive-term', this.search.term);
+        this.$emit('submitted', this.search.term);
       }
     }
   }
