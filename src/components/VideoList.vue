@@ -1,10 +1,10 @@
 <template>
-  <v-layout justify-center align-center v-if="show">
+  <v-layout justify-center align-center>
     <v-flex xs12 sm10 md8>
       <v-container class="top-space">
         <v-row>
           <v-col
-            v-for="(result, idx) in results"
+            v-for="(video, idx) in videos"
             :key="idx"
             cols="12"
             sm="6"
@@ -14,22 +14,23 @@
               class="mb-5"
             >
               <v-img
-                class="white--text align-end"
+                class="video-list__thumbnail white--text align-end"
                 height="200px"
-                :src="result.snippet.thumbnails.high.url"
+                :src="video.snippet.thumbnails.high.url"
               />
 
-              <v-card-title>{{result.snippet.title}}</v-card-title>
+              <v-card-title class="video-list__title">{{video.snippet.title}}</v-card-title>
 
-              <v-card-text class="text--primary">
-                <div>{{ result.snippet.description }}</div>
+              <v-card-text class="video-list__description text--primary">
+                <div>{{ video.snippet.description }}</div>
               </v-card-text>
 
               <v-card-actions>
                 <v-btn
+                  class="video-list__details-btn"
                   color="#3e206d"
                   text
-                  @click="details(result.id.videoId)"
+                  @click="getVideoStatistics(video.id.videoId)"
                 >
                   Detalhes
                 </v-btn>
@@ -44,75 +45,37 @@
 </template>
 
 <script>
-import axios from 'axios';
 import { EventBus } from '@/event-bus.js';
 
 export default {
   name: 'VideoList',
 
+  props: {
+    videos: Array
+  },
+
   data() {
     return {
-      searchBaseUrl: 'https://www.googleapis.com/youtube/v3/search?part=id,snippet&type=video&q=',
-      videoBaseUrl: 'https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=',
-      apiKey: 'AIzaSyBfNv0UixraspY_Cc66VSPsm-_c-mn7H28',
-      show: false,
-      term: '',
-      maxPerPage: 6,
-      nextPage: '',
-      results: [],
+      
     }
   },
 
   methods: {
-    searchUrl(nextPageToken) {
-      if(nextPageToken !== undefined) {
-        return `${this.searchBaseUrl}${this.term}&key=${this.apiKey}&maxResults=${this.maxPerPage}&pageToken=${nextPageToken}`;
-      }
-
-      return `${this.searchBaseUrl}${this.term}&key=${this.apiKey}&maxResults=${this.maxPerPage}`;
-    },
-
-    videoUrl(id) {
-      return `${this.videoBaseUrl}${id}&key=${this.apiKey}`;
-    },
-
     infiniteScroll() {
       window.onscroll = () => {
         let windowBottom = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
 
-        if (windowBottom) {
-          axios.get(this.searchUrl(this.nextPage))
-            .then(res => {
-              this.nextPage = res.data.nextPageToken;
-
-              res.data.items.map((item) => {
-                this.results.push(item);
-              });
-            });
+        if(windowBottom) {
+          this.$emit('reach-bottom')
         }
       };
     },
 
-    details(id) {
-      axios.get(this.videoUrl(id))
-        .then(res => {
-          EventBus.$emit('receive-details', res);
-        });
+    getVideoStatistics(id) {
+      this.$emit('get-video-statistics', id)
+      EventBus.$emit('details-clicked')
     }
     
-  },
-
-  created() {
-    EventBus.$on('receive-term', term => {
-      this.term = term;
-      this.show = true;
-      axios.get(this.searchUrl())
-        .then(res => {
-          this.nextPage = res.data.nextPageToken;
-          
-          this.results = res.data.items;
-        });
-    })
   },
 
   mounted() {
