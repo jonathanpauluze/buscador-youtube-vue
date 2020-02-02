@@ -22,7 +22,7 @@
 
             <iframe
               class="embed-video"
-              :src="embedUrl"
+              :src="videoStatistics.embedUrl"
               frameborder="0"
               allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
               allowfullscreen
@@ -31,26 +31,26 @@
             <v-card-title
               primary-title
             >
-              {{ this.videoInfo.items[0].snippet.title }}
+              {{ videoStatistics.title }}
             </v-card-title>
 
             <div class="statistic-container">
               <div class="views">
                 <v-icon size="18">mdi-eye</v-icon>
-                <span class="number">{{ this.formattedViews }}</span>
+                <span class="number">{{ videoStatistics.views }}</span>
               </div>
               <div class="likes">
                 <v-icon size="18">mdi-thumb-up</v-icon>
-                <span class="number">{{ this.formattedLikes }}</span>
+                <span class="number">{{ videoStatistics.likes }}</span>
               </div>
               <div class="dislikes">
                 <v-icon size="18">mdi-thumb-down</v-icon>
-                <span class="number">{{ this.formattedDislikes }}</span>
+                <span class="number">{{ videoStatistics.dislikes }}</span>
               </div>
             </div>
 
             <v-card-text
-              v-html="formattedDescription"
+              v-html="videoStatistics.description"
               class="description"
             ></v-card-text>
 
@@ -65,27 +65,20 @@
 import { EventBus } from '@/event-bus.js';
 
 export default {
+  props: {
+    videoStatistics: Object
+  },
+
   data() {
     return {
       show: false,
-      dialog: false,
-      videoInfo: Object,
-      embedUrl: '',
-      formattedViews: '',
-      formattedLikes: '',
-      formattedDislikes: ''
+      dialog: false
     }
   },
 
   created() {
-    EventBus.$on('receive-details', res => {
-      this.show = true;
-      this.videoInfo = res.data;
-      this.embedUrl = 'https://www.youtube.com/embed/' + res.data.items[0].id;
-      this.formattedDescription = res.data.items[0].snippet.description.replace(/\n/gm, '<br>');
-      this.formattedViews = new Intl.NumberFormat('pt').format(res.data.items[0].statistics.viewCount);
-      this.formattedLikes = new Intl.NumberFormat('pt').format(res.data.items[0].statistics.likeCount);
-      this.formattedDislikes = new Intl.NumberFormat('pt').format(res.data.items[0].statistics.dislikeCount);
+    EventBus.$on('details-clicked', () => {
+      this.show = true
 
       setTimeout(() => {
         this.dialog = true;
