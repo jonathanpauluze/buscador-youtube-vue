@@ -11,7 +11,7 @@ Hospedei a aplicação no Netlify e ela pode ser visualizada [clicando aqui](htt
 
 ### Requisitos
 Para rodar esta projeto, é necessário ter instalado em sua máquina:
-- [Git] (https://git-scm.com/)
+- [Git](https://git-scm.com/)
 - [NodeJS](https://nodejs.org/en/)
 - [Yarn](https://yarnpkg.com/) (Opcional)
 
