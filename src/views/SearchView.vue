@@ -75,7 +75,7 @@ export default {
           this.nextPage = res.data.nextPageToken;
 
           res.data.items.map((video) => {
-            this.results.push(video);
+            this.videos.push(video);
           });
         });
     },
