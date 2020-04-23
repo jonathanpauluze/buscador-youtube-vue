@@ -7,7 +7,7 @@ Projeto criado como parte de um teste para vaga de frontend. O objetivo era cria
 - Optei por fazer a paginação com infinite scroll, pois oferece uma melhor experiência ao usuário. Para carregar mais resultados, basta rolar até o final da página.
 - Optei mostrar os detalhes do vídeo em um modal, pensando também em uma melhor experiência ao usuário, para não precisar redirecionar o usuário para outras páginas.
 
-Hospedei a aplicação no Netlify e ela pode ser visualizada [clicando aqui](https://busca-youtube.netlify.com).
+Hospedei a aplicação no Netlify e ela pode ser visualizada [clicando aqui](https://buscador-youtube.netlify.com).
 
 ### Requisitos
 Para rodar esta projeto, é necessário ter instalado em sua máquina:
@@ -18,12 +18,12 @@ Para rodar esta projeto, é necessário ter instalado em sua máquina:
 ### Baixando projeto
 Clone o projeto em sua máquina:
 ```
-git clone https://github.com/jonathanpauluze/vertex-test-frontend.git vertex-test-frontend
+git clone https://github.com/jonathanpauluze/buscador-youtube-vue.git
 ```
 
 Abra o terminal a pasta do projeto
 ```
-cd vertex-test-frontend
+cd buscador-youtube-vue
 ```
 
 ### Configurando projeto
